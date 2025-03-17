@@ -19,7 +19,7 @@ def extract_title(markdown):
     
     raise ValueError("No title in the markdown file")
 
-def generate_page(from_path, template_path, dest_path):
+def generate_page(basepath, from_path, template_path, dest_path):
     print(f"Generating page from {from_path} to {dest_path} using {template_path}")
 
     if not os.path.exists(from_path):
@@ -40,6 +40,10 @@ def generate_page(from_path, template_path, dest_path):
     template_with_title = template.replace("{{ Title }}", title)
 
     output = template_with_title.replace("{{ Content }}", html)
+
+    output = output.replace("href=\"/", f"href=\"/{basepath}")
+    output = output.replace("src=\"/", f"href=\"/{basepath}")
+
 
     dest_dir = dest_path.split("/")
     dest_dir = "/".join(dest_dir[:-1])

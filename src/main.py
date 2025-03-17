@@ -1,24 +1,32 @@
 from generator import generate_page 
 import os
 import shutil
+import sys
 
 def main():
-    print("Removing old public folder")
-    remove_old_public()
-    print("Creating new public folder")
-    create_new_public()
-    copy_files("static", "public")
-    generate_pages_recursive("content", "template.html", "public")
+    
+    if len(sys.argv) == 1:
+        basepath = "/"
+    else:
+        basepath = sys.argv[1]
 
-def remove_old_public():
-    if(os.path.exists("public")):
+    dest_folder = "docs"
+    print(f"Removing old {dest_folder} folder")
+    remove_old_dest(dest_folder)
+    print(f"Creating new {dest_folder} folder")
+    create_new_dest(dest_folder)
+    copy_files("static", "docs")
+    generate_pages_recursive(basepath, "content", "template.html", "docs")
+
+def remove_old_dest(dest_folder):
+    if(os.path.exists(dest_folder)):
         print("Removed")
-        shutil.rmtree("public")
+        shutil.rmtree(dest_folder)
 
-def create_new_public():
-    if not os.path.exists("public"):
+def create_new_dest(dest_folder):
+    if not os.path.exists(dest_folder):
         print("Created")
-        os.mkdir("public")
+        os.mkdir(dest_folder)
 
 def copy_files(old_path, new_path):
     tree = os.listdir(old_path)
@@ -32,7 +40,7 @@ def copy_files(old_path, new_path):
             os.mkdir(new_item_path)
             copy_files(item_path, new_item_path)
 
-def generate_pages_recursive(dir_path_content, template_path, dest_dir_path):
+def generate_pages_recursive(base_path, dir_path_content, template_path, dest_dir_path):
     tree = os.listdir(dir_path_content)
 
     for item in tree:
@@ -42,10 +50,10 @@ def generate_pages_recursive(dir_path_content, template_path, dest_dir_path):
         if os.path.isfile(item_path):
             if item.endswith('.md'):
                 new_item_path = new_item_path.replace(".md", ".html")
-                generate_page(item_path, template_path, new_item_path)
+                generate_page(base_path, item_path, template_path, new_item_path)
         else: 
             os.mkdir(new_item_path)
-            generate_pages_recursive(item_path, template_path, new_item_path)
+            generate_pages_recursive(base_path, item_path, template_path, new_item_path)
 
 
 main()
