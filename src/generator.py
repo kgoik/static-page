@@ -41,8 +41,8 @@ def generate_page(basepath, from_path, template_path, dest_path):
 
     output = template_with_title.replace("{{ Content }}", html)
 
-    output = output.replace("href=\"/", f"href=\"/{basepath}")
-    output = output.replace("src=\"/", f"href=\"/{basepath}")
+    output = output.replace("href=\"/", f"href=\"{basepath}")
+    output = output.replace("src=\"/", f"href=\"{basepath}")
 
 
     dest_dir = dest_path.split("/")
